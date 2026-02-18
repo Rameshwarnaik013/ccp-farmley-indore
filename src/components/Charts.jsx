@@ -84,18 +84,21 @@ const Charts = ({ data }) => {
         }],
     };
 
-    const categories = [...new Set(data.map(d => d.Category))];
-    const categoryNoCounts = categories.map(cat =>
-        data.filter(d => d.Category === cat && d.Dropdown === 'No').length
-    );
+    // Sort categories by non-compliance count (High to Low)
+    const categoryStats = [...new Set(data.map(d => d.Category))].map(cat => ({
+        label: cat,
+        count: data.filter(d => d.Category === cat && d.Dropdown === 'No').length
+    })).sort((a, b) => b.count - a.count);
 
     const categoryData = {
-        labels: categories,
+        labels: categoryStats.map(s => `${s.label} (${s.count})`),
         datasets: [{
             label: 'Non-Compliance Count',
-            data: categoryNoCounts,
+            data: categoryStats.map(s => s.count),
             backgroundColor: '#ef4444',
             borderRadius: 6,
+            barThickness: undefined,
+            maxBarThickness: 40,
         }],
     };
 
@@ -197,10 +200,11 @@ const Charts = ({ data }) => {
             </div>
 
             {/* Category Compliance Blocks */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                {categories.map(cat => {
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                {categoryStats.map(stat => {
+                    const cat = stat.label;
                     const catTotal = data.filter(d => d.Category === cat).length;
-                    const catNo = data.filter(d => d.Category === cat && d.Dropdown === 'No').length;
+                    const catNo = stat.count;
                     const catYes = catTotal - catNo;
                     const compliance = catTotal > 0 ? (catYes / catTotal) * 100 : 0;
 
