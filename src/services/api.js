@@ -4,7 +4,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzQ4xxkbm1_dLy6YbapHkXq
 export const fetchCCPData = async () => {
     try {
         const response = await fetch(API_URL);
-        console.log(response);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

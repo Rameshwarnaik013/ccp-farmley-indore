@@ -52,14 +52,14 @@ const DataTable = ({ data }) => {
                     </thead>
                     <tbody className="bg-white divide-y divide-slate-50">
                         {currentData.length > 0 ? (
-                            currentData.map((row) => (
+                            currentData.map((row, index) => (
                                 <tr
-                                    key={row.id}
+                                    key={index}
                                     className={clsx(
                                         "transition-all duration-200 group",
                                         row.Dropdown === 'No'
-                                            ? "bg-red-50/50 hover:bg-red-50"
-                                            : "hover:bg-slate-50"
+                                            ? "bg-red-50 border-l-4 border-red-500 hover:bg-red-100/50"
+                                            : "hover:bg-slate-50 border-l-4 border-transparent"
                                     )}
                                 >
                                     <td className={clsx("px-6 py-4 whitespace-nowrap text-sm font-medium", row.Dropdown === 'No' ? "text-red-900" : "text-slate-700")}>
@@ -87,7 +87,7 @@ const DataTable = ({ data }) => {
                                             {row.Dropdown === 'No' ? 'Fail' : 'Pass'}
                                         </span>
                                     </td>
-                                    <td className={clsx("px-6 py-4 text-sm max-w-xs truncate", row.Dropdown === 'No' ? "text-red-600 font-medium" : "text-slate-500")}>
+                                    <td className={clsx("px-6 py-4 text-sm max-w-xs truncate", row.Dropdown === 'No' ? "text-red-700 font-bold" : "text-slate-500")}>
                                         {row.Remarks}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">

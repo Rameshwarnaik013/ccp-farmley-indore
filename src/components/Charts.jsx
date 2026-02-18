@@ -133,29 +133,104 @@ const Charts = ({ data }) => {
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <ChartCard title="Compliance Breakdown" icon={PieChart}>
-                <Doughnut data={complianceData} options={{ ...commonOptions, cutout: '70%' }} />
-            </ChartCard>
+        <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <ChartCard title="Compliance Breakdown" icon={PieChart}>
+                    <div className="relative h-[200px]">
+                        <Doughnut data={complianceData} options={{ ...commonOptions, cutout: '70%', plugins: { ...commonOptions.plugins, legend: { display: false } } }} />
+                        <div className="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
+                            <span className="text-3xl font-bold text-slate-800">{Math.round((yesCount / (yesCount + noCount || 1)) * 100)}%</span>
+                            <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">Compliant</span>
+                        </div>
+                    </div>
+                    <div className="mt-6 space-y-3">
+                        <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                            <div className="flex items-center gap-3">
+                                <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50" />
+                                <span className="text-sm font-semibold text-slate-700">Compliant</span>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-sm font-bold text-slate-800">{yesCount.toLocaleString()}</div>
+                                <div className="text-xs font-medium text-emerald-600">{((yesCount / (yesCount + noCount || 1)) * 100).toFixed(1)}%</div>
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-between p-3 rounded-xl bg-red-50 border border-red-100">
+                            <div className="flex items-center gap-3">
+                                <div className="w-3 h-3 rounded-full bg-red-500 shadow-sm shadow-red-500/50" />
+                                <span className="text-sm font-semibold text-slate-700">Non-Compliant</span>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-sm font-bold text-slate-800">{noCount.toLocaleString()}</div>
+                                <div className="text-xs font-medium text-red-600">{((noCount / (yesCount + noCount || 1)) * 100).toFixed(1)}%</div>
+                            </div>
+                        </div>
+                    </div>
+                </ChartCard>
 
-            <ChartCard title="Category Risks" icon={BarChart3}>
-                <Bar data={categoryData} options={commonOptions} />
-            </ChartCard>
+                <ChartCard title="Category Risks" icon={BarChart3}>
+                    <Bar
+                        data={categoryData}
+                        options={{
+                            ...commonOptions,
+                            indexAxis: 'y',
+                            scales: {
+                                x: { grid: { color: '#f1f5f9' }, ticks: { font: { family: "'Inter', sans-serif" } } },
+                                y: { grid: { display: false }, ticks: { autoSkip: false, font: { family: "'Inter', sans-serif", size: 11 } } }
+                            }
+                        }}
+                    />
+                </ChartCard>
 
-            <ChartCard title="Risk Trend Analysis" icon={TrendingUp}>
-                <Line data={trendData} options={commonOptions} />
-            </ChartCard>
+                <ChartCard title="Risk Trend Analysis" icon={TrendingUp}>
+                    <Line data={trendData} options={commonOptions} />
+                </ChartCard>
 
-            <ChartCard title="Shift Performance" icon={Activity}>
-                <Bar
-                    data={shiftData}
-                    options={{
-                        ...commonOptions,
-                        scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' } } }
-                    }}
-                />
-            </ChartCard>
-        </div>
+                <ChartCard title="Shift Performance" icon={Activity}>
+                    <Bar
+                        data={shiftData}
+                        options={{
+                            ...commonOptions,
+                            scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' } } }
+                        }}
+                    />
+                </ChartCard>
+            </div>
+
+            {/* Category Compliance Blocks */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {categories.map(cat => {
+                    const catTotal = data.filter(d => d.Category === cat).length;
+                    const catNo = data.filter(d => d.Category === cat && d.Dropdown === 'No').length;
+                    const catYes = catTotal - catNo;
+                    const compliance = catTotal > 0 ? (catYes / catTotal) * 100 : 0;
+
+                    let colorClass = "text-emerald-600 bg-emerald-50 border-emerald-100";
+                    if (compliance < 80) colorClass = "text-red-600 bg-red-50 border-red-100";
+                    else if (compliance < 95) colorClass = "text-amber-600 bg-amber-50 border-amber-100";
+
+                    return (
+                        <div key={cat} className={`p-4 rounded-xl border ${colorClass} flex flex-col justify-between transition-transform hover:scale-[1.02] cursor-default`}>
+                            <div className="text-sm font-medium opacity-80 mb-2 truncate" title={cat}>{cat}</div>
+                            <div className="flex items-end justify-between">
+                                <span className="text-2xl font-bold">{compliance.toFixed(1)}%</span>
+                                <span className="text-xs font-semibold px-2 py-1 rounded-full bg-white/50 backdrop-blur-sm border border-black/5">
+                                    {compliance < 100 ? 'Needs Attention' : 'Perfect'}
+                                </span>
+                            </div>
+                            <div className="w-full bg-black/5 h-1.5 rounded-full mt-3 overflow-hidden">
+                                <div
+                                    className="h-full rounded-full transition-all duration-500"
+                                    style={{
+                                        width: `${compliance}%`,
+                                        backgroundColor: 'currentColor'
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        </>
     );
 };
 
