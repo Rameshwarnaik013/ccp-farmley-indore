@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Image as ImageIcon, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Image as ImageIcon, AlertCircle, CheckCircle2, X } from 'lucide-react';
 import clsx from 'clsx';
 
 const DataTable = ({ data }) => {
     const [sortConfig, setSortConfig] = useState({ key: 'Date', direction: 'desc' });
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedImage, setSelectedImage] = useState(null);
     const itemsPerPage = 10;
 
     const sortedData = [...data].sort((a, b) => {
@@ -100,9 +101,16 @@ const DataTable = ({ data }) => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                                         {row.Images ? (
-                                            <a href={row.Images} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
+                                            <button
+                                                onClick={() => {
+                                                    console.log('Opening image:', row.Images);
+                                                    setSelectedImage(row.Images);
+                                                }}
+                                                className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors pointer-events-auto"
+                                                title="View Proof"
+                                            >
                                                 <ImageIcon className="w-4 h-4" />
-                                            </a>
+                                            </button>
                                         ) : '-'}
                                     </td>
                                 </tr>
@@ -146,6 +154,35 @@ const DataTable = ({ data }) => {
                     </button>
                 </div>
             </div>
+
+            {/* Image Preview Modal */}
+            {selectedImage && (
+                <div
+                    className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                    onClick={() => setSelectedImage(null)}
+                >
+                    <div
+                        className="relative max-w-5xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="absolute top-4 right-4 z-10">
+                            <button
+                                onClick={() => setSelectedImage(null)}
+                                className="p-2 bg-white/90 hover:bg-white text-slate-800 rounded-full shadow-lg transition-all hover:scale-110 active:scale-95"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <div className="p-2">
+                            <img
+                                src={selectedImage}
+                                alt="Proof"
+                                className="w-full h-auto max-h-[80vh] object-contain rounded-xl"
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

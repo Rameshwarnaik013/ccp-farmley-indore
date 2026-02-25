@@ -1,8 +1,9 @@
-import React from 'react';
-import { AlertCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { AlertCircle, Image as ImageIcon, X } from 'lucide-react';
 import clsx from 'clsx';
 
 const FailedTable = ({ data }) => {
+    const [selectedImage, setSelectedImage] = useState(null);
     // Filter for failed records
     const failedData = data.filter(row => row.Dropdown === 'No');
 
@@ -26,7 +27,7 @@ const FailedTable = ({ data }) => {
                 <table className="min-w-full divide-y divide-red-100">
                     <thead className="bg-red-50/50">
                         <tr>
-                            {['Date', 'Shift', 'Particulars', 'Description', 'Remarks'].map((head) => (
+                            {['Date', 'Shift', 'Particulars', 'Description', 'Remarks', 'Proof'].map((head) => (
                                 <th
                                     key={head}
                                     className="px-6 py-3 text-left text-xs font-bold text-red-700 uppercase tracking-wider select-none"
@@ -59,11 +60,54 @@ const FailedTable = ({ data }) => {
                                 <td className="px-6 py-3 text-sm font-bold text-red-600 max-w-xs break-words">
                                     {row.Remarks}
                                 </td>
+                                <td className="px-6 py-3 whitespace-nowrap text-sm text-slate-500">
+                                    {row.Images ? (
+                                        <button
+                                            onClick={() => {
+                                                console.log('FailedTable Opening image:', row.Images);
+                                                setSelectedImage(row.Images);
+                                            }}
+                                            className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors pointer-events-auto"
+                                            title="View Proof"
+                                        >
+                                            <ImageIcon className="w-4 h-4" />
+                                        </button>
+                                    ) : '-'}
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+
+            {/* Image Preview Modal */}
+            {selectedImage && (
+                <div
+                    className="fixed inset-0 z-[1001] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                    onClick={() => setSelectedImage(null)}
+                >
+                    <div
+                        className="relative max-w-5xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="absolute top-4 right-4 z-10">
+                            <button
+                                onClick={() => setSelectedImage(null)}
+                                className="p-2 bg-white/90 hover:bg-white text-slate-800 rounded-full shadow-lg transition-all hover:scale-110 active:scale-95"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <div className="p-2">
+                            <img
+                                src={selectedImage}
+                                alt="Proof"
+                                className="w-full h-auto max-h-[80vh] object-contain rounded-xl"
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
