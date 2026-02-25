@@ -180,10 +180,11 @@ const DataTable = ({ data }) => {
                     >
                         <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
                             <a
-                                href={selectedImage}
+                                href={getDirectImageUrl(selectedImage)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-2 bg-white/90 hover:bg-white text-blue-600 rounded-full shadow-lg transition-all hover:scale-110 active:scale-95 flex items-center gap-1 px-3"
+                                onClick={(e) => e.stopPropagation()}
                             >
                                 <ExternalLink className="w-4 h-4" />
                                 <span className="text-xs font-bold">Open Full Screen</span>

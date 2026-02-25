@@ -13,8 +13,8 @@ export const getDirectImageUrl = (url) => {
     if (!matchUrl) return url;
 
     let targetUrl = matchUrl[1].trim();
-    // Remove trailing comma or parenthetical garbage if any
-    targetUrl = targetUrl.replace(/[,\)]+$/, '');
+    // Remove trailing junk (commas, quotes, brackets, parentheses)
+    targetUrl = targetUrl.replace(/[,"'\)\}\]]+$/, '');
 
     // 2. Google Drive URL patterns
     const drivePatterns = [
