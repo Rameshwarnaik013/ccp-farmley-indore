@@ -105,7 +105,8 @@ const DataTable = ({ data }) => {
                                             <div className="flex items-center gap-1.5">
                                                 <button
                                                     onClick={() => {
-                                                        console.log('Opening image:', row.Images);
+                                                        const directUrl = getDirectImageUrl(row.Images);
+                                                        console.log('Selected Image Data:', { original: row.Images, direct: directUrl });
                                                         setSelectedImage(row.Images);
                                                     }}
                                                     className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors pointer-events-auto"
@@ -114,7 +115,7 @@ const DataTable = ({ data }) => {
                                                     <ImageIcon className="w-4 h-4" />
                                                 </button>
                                                 <a
-                                                    href={row.Images}
+                                                    href={getDirectImageUrl(row.Images)}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition-colors"

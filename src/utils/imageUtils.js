@@ -7,8 +7,14 @@
 export const getDirectImageUrl = (url) => {
     if (!url || typeof url !== 'string') return url;
 
-    // 1. Handle potential comma-separated URLs (take the first one)
-    const firstUrl = url.split(',')[0].trim();
+    // 1. Extract the first URL-like string from the input (handles GSHEET junk or multiple URLs)
+    const urlPattern = /(https?:\/\/[^\s,]+)/i;
+    const matchUrl = url.match(urlPattern);
+    if (!matchUrl) return url;
+
+    let targetUrl = matchUrl[1].trim();
+    // Remove trailing comma or parenthetical garbage if any
+    targetUrl = targetUrl.replace(/[,\)]+$/, '');
 
     // 2. Google Drive URL patterns
     const drivePatterns = [
@@ -18,15 +24,13 @@ export const getDirectImageUrl = (url) => {
     ];
 
     for (const pattern of drivePatterns) {
-        const match = firstUrl.match(pattern);
+        const match = targetUrl.match(pattern);
         if (match && match[1]) {
             const fileId = match[1];
             return `https://docs.google.com/uc?export=view&id=${fileId}`;
         }
     }
 
-    // 3. Supabase or other direct URLs
-    // Supabase URLs like https://zppwyfqtiyztjlmehrad.supabase.co/storage/v1/object/public/...
-    // are already direct, but we ensure they are trimmed and parsed.
-    return firstUrl;
+    // 3. Direct URLs (Supabase, etc.)
+    return targetUrl;
 };

@@ -66,7 +66,8 @@ const FailedTable = ({ data }) => {
                                         <div className="flex items-center gap-1.5">
                                             <button
                                                 onClick={() => {
-                                                    console.log('FailedTable Opening image:', row.Images);
+                                                    const directUrl = getDirectImageUrl(row.Images);
+                                                    console.log('FailedTable Selected Image:', { original: row.Images, direct: directUrl });
                                                     setSelectedImage(row.Images);
                                                 }}
                                                 className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors pointer-events-auto"
@@ -75,7 +76,7 @@ const FailedTable = ({ data }) => {
                                                 <ImageIcon className="w-4 h-4" />
                                             </button>
                                             <a
-                                                href={row.Images}
+                                                href={getDirectImageUrl(row.Images)}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition-colors"
