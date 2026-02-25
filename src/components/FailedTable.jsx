@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AlertCircle, Image as ImageIcon, X, ExternalLink } from 'lucide-react';
 import clsx from 'clsx';
+import { getDirectImageUrl } from '../utils/imageUtils';
 
 const FailedTable = ({ data }) => {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -120,7 +121,7 @@ const FailedTable = ({ data }) => {
                         </div>
                         <div className="p-2">
                             <img
-                                src={selectedImage}
+                                src={getDirectImageUrl(selectedImage)}
                                 alt="Proof"
                                 className="w-full h-auto max-h-[80vh] object-contain rounded-xl"
                                 referrerPolicy="no-referrer"

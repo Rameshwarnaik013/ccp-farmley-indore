@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Image as ImageIcon, AlertCircle, CheckCircle2, X, ExternalLink } from 'lucide-react';
 import clsx from 'clsx';
+import { getDirectImageUrl } from '../utils/imageUtils';
 
 const DataTable = ({ data }) => {
     const [sortConfig, setSortConfig] = useState({ key: 'Date', direction: 'desc' });
@@ -195,7 +196,7 @@ const DataTable = ({ data }) => {
                         </div>
                         <div className="p-2">
                             <img
-                                src={selectedImage}
+                                src={getDirectImageUrl(selectedImage)}
                                 alt="Proof"
                                 className="w-full h-auto max-h-[80vh] object-contain rounded-xl"
                                 referrerPolicy="no-referrer"
