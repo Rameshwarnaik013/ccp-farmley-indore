@@ -101,30 +101,35 @@ const DataTable = ({ data }) => {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                                        {row.Images ? (
-                                            <div className="flex items-center gap-1.5">
-                                                <button
-                                                    onClick={() => {
-                                                        const directUrl = getDirectImageUrl(row.Images);
-                                                        console.log('Selected Image Data:', { original: row.Images, direct: directUrl });
-                                                        setSelectedImage(row.Images);
-                                                    }}
-                                                    className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors pointer-events-auto"
-                                                    title="View Preview"
-                                                >
-                                                    <ImageIcon className="w-4 h-4" />
-                                                </button>
-                                                <a
-                                                    href={getDirectImageUrl(row.Images)}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition-colors"
-                                                    title="Open Original"
-                                                >
-                                                    <ExternalLink className="w-4 h-4" />
-                                                </a>
-                                            </div>
-                                        ) : '-'}
+                                        {(() => {
+                                            const directUrl = getDirectImageUrl(row.Images);
+                                            if (!directUrl) return '-';
+
+                                            return (
+                                                <div className="flex items-center gap-1.5">
+                                                    <button
+                                                        onClick={() => {
+                                                            console.log('Opening Preview:', { original: row.Images, extracted: directUrl });
+                                                            setSelectedImage(directUrl);
+                                                        }}
+                                                        className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors pointer-events-auto"
+                                                        title="View Preview"
+                                                    >
+                                                        <ImageIcon className="w-4 h-4" />
+                                                    </button>
+                                                    <a
+                                                        href={directUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition-colors"
+                                                        title="Open Original"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        <ExternalLink className="w-4 h-4" />
+                                                    </a>
+                                                </div>
+                                            );
+                                        })()}
                                     </td>
                                 </tr>
                             ))
