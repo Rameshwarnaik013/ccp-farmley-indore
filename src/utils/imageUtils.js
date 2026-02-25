@@ -5,18 +5,20 @@
  * @returns {string} The direct image URL or the original URL
  */
 export const getDirectImageUrl = (url) => {
-    if (!url || typeof url !== 'string') return url;
+    if (!url || typeof url !== 'string') return null;
 
-    // 1. Extract the first URL-like string from the input (handles GSHEET junk or multiple URLs)
-    const urlPattern = /(https?:\/\/[^\s,]+)/i;
+    // 1. Extract the first URL-like string from the input (handles GSHEET junk, HYPERLINK formulas, or multiple URLs)
+    // This regex looks for http(s) followed by non-space characters, 
+    // but stops before quotes, commas, parentheses, or closing brackets
+    const urlPattern = /(https?:\/\/[^"'\s,)\}\]]+)/i;
     const matchUrl = url.match(urlPattern);
-    if (!matchUrl) return url;
+
+    // If no absolute URL is found, return null to signify "no valid image"
+    if (!matchUrl) return null;
 
     let targetUrl = matchUrl[1].trim();
-    // Remove trailing junk (commas, quotes, brackets, parentheses)
-    targetUrl = targetUrl.replace(/[,"'\)\}\]]+$/, '');
 
-    // 2. Google Drive URL patterns
+    // 2. Google Drive URL patterns for direct viewing
     const drivePatterns = [
         /drive\.google\.com\/file\/d\/([^\/]+)/,
         /drive\.google\.com\/open\?id=([^\&]+)/,
@@ -31,6 +33,6 @@ export const getDirectImageUrl = (url) => {
         }
     }
 
-    // 3. Direct URLs (Supabase, etc.)
-    return targetUrl;
+    // 3. Direct URLs (Supabase, S3, etc.) - ensure it starts with http
+    return targetUrl.startsWith('http') ? targetUrl : null;
 };
