@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertCircle, Image as ImageIcon, X } from 'lucide-react';
+import { AlertCircle, Image as ImageIcon, X, ExternalLink } from 'lucide-react';
 import clsx from 'clsx';
 
 const FailedTable = ({ data }) => {
@@ -62,16 +62,27 @@ const FailedTable = ({ data }) => {
                                 </td>
                                 <td className="px-6 py-3 whitespace-nowrap text-sm text-slate-500">
                                     {row.Images ? (
-                                        <button
-                                            onClick={() => {
-                                                console.log('FailedTable Opening image:', row.Images);
-                                                setSelectedImage(row.Images);
-                                            }}
-                                            className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors pointer-events-auto"
-                                            title="View Proof"
-                                        >
-                                            <ImageIcon className="w-4 h-4" />
-                                        </button>
+                                        <div className="flex items-center gap-1.5">
+                                            <button
+                                                onClick={() => {
+                                                    console.log('FailedTable Opening image:', row.Images);
+                                                    setSelectedImage(row.Images);
+                                                }}
+                                                className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors pointer-events-auto"
+                                                title="View Preview"
+                                            >
+                                                <ImageIcon className="w-4 h-4" />
+                                            </button>
+                                            <a
+                                                href={row.Images}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition-colors"
+                                                title="Open Original"
+                                            >
+                                                <ExternalLink className="w-4 h-4" />
+                                            </a>
+                                        </div>
                                     ) : '-'}
                                 </td>
                             </tr>
@@ -90,7 +101,16 @@ const FailedTable = ({ data }) => {
                         className="relative max-w-5xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="absolute top-4 right-4 z-10">
+                        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+                            <a
+                                href={selectedImage}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 bg-white/90 hover:bg-white text-blue-600 rounded-full shadow-lg transition-all hover:scale-110 active:scale-95 flex items-center gap-1 px-3"
+                            >
+                                <ExternalLink className="w-4 h-4" />
+                                <span className="text-xs font-bold">Open Full Screen</span>
+                            </a>
                             <button
                                 onClick={() => setSelectedImage(null)}
                                 className="p-2 bg-white/90 hover:bg-white text-slate-800 rounded-full shadow-lg transition-all hover:scale-110 active:scale-95"
@@ -103,6 +123,7 @@ const FailedTable = ({ data }) => {
                                 src={selectedImage}
                                 alt="Proof"
                                 className="w-full h-auto max-h-[80vh] object-contain rounded-xl"
+                                referrerPolicy="no-referrer"
                             />
                         </div>
                     </div>
