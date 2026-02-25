@@ -36,3 +36,32 @@ export const getDirectImageUrl = (url) => {
     // 3. Direct URLs (Supabase, S3, etc.) - ensure it starts with http
     return targetUrl.startsWith('http') ? targetUrl : null;
 };
+
+/**
+ * Scans an object for any property that looks like a web URL (image link).
+ * Very helpful when GSheet column names are unpredictable.
+ */
+export const findAnyImageUrl = (row) => {
+    if (!row || typeof row !== 'object') return null;
+
+    // 1. Try common keys first
+    const priorityKeys = ['Images', 'Image', 'Proof', 'URL', 'images', 'image', 'proof', 'url'];
+    for (const key of priorityKeys) {
+        const val = row[key];
+        if (val && typeof val === 'string' && val.toLowerCase().includes('http')) {
+            const extracted = getDirectImageUrl(val);
+            if (extracted) return extracted;
+        }
+    }
+
+    // 2. Backup: Scan ALL keys for any absolute HTTP URL
+    for (const key in row) {
+        const val = row[key];
+        if (typeof val === 'string' && val.toLowerCase().includes('http')) {
+            const extracted = getDirectImageUrl(val);
+            if (extracted) return extracted;
+        }
+    }
+
+    return null;
+};

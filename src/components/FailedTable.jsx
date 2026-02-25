@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AlertCircle, Image as ImageIcon, X, ExternalLink } from 'lucide-react';
 import clsx from 'clsx';
-import { getDirectImageUrl } from '../utils/imageUtils';
+import { getDirectImageUrl, findAnyImageUrl } from '../utils/imageUtils';
 
 const FailedTable = ({ data }) => {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -63,13 +63,13 @@ const FailedTable = ({ data }) => {
                                 </td>
                                 <td className="px-6 py-3 whitespace-nowrap text-sm text-slate-500">
                                     {(() => {
-                                        // Try various common column names for images
-                                        const rawImageData = row.Images || row.Image || row.Proof || row.URL || '';
-                                        const directUrl = getDirectImageUrl(rawImageData);
+                                        // ULTRA ROBUST: Search entire row for any URL if specific keys fail
+                                        const directUrl = findAnyImageUrl(row);
 
                                         if (!directUrl) {
-                                            if (row.Images || row.Image) {
-                                                console.log('Failed extracting image from:', { images: row.Images, image: row.Image });
+                                            // Debug log to help identify column names if still failing
+                                            if (Object.values(row).some(v => typeof v === 'string' && v.includes('http'))) {
+                                                console.log('Found URL in row but extraction failed:', row);
                                             }
                                             return '-';
                                         }

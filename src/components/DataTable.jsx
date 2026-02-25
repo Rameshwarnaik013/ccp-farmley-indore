@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Image as ImageIcon, AlertCircle, CheckCircle2, X, ExternalLink } from 'lucide-react';
 import clsx from 'clsx';
-import { getDirectImageUrl } from '../utils/imageUtils';
+import { getDirectImageUrl, findAnyImageUrl } from '../utils/imageUtils';
 
 const DataTable = ({ data }) => {
     const [sortConfig, setSortConfig] = useState({ key: 'Date', direction: 'desc' });
@@ -102,8 +102,8 @@ const DataTable = ({ data }) => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                                         {(() => {
-                                            const rawImageData = row.Images || row.Image || row.Proof || row.URL || '';
-                                            const directUrl = getDirectImageUrl(rawImageData);
+                                            // Scan EVERY property in the row for a link
+                                            const directUrl = findAnyImageUrl(row);
                                             if (!directUrl) return '-';
 
                                             return (
