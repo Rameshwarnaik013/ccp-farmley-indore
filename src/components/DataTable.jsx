@@ -102,7 +102,8 @@ const DataTable = ({ data }) => {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                                         {(() => {
-                                            const directUrl = getDirectImageUrl(row.Images);
+                                            const rawImageData = row.Images || row.Image || row.Proof || row.URL || '';
+                                            const directUrl = getDirectImageUrl(rawImageData);
                                             if (!directUrl) return '-';
 
                                             return (

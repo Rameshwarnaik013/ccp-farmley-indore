@@ -63,8 +63,16 @@ const FailedTable = ({ data }) => {
                                 </td>
                                 <td className="px-6 py-3 whitespace-nowrap text-sm text-slate-500">
                                     {(() => {
-                                        const directUrl = getDirectImageUrl(row.Images);
-                                        if (!directUrl) return '-';
+                                        // Try various common column names for images
+                                        const rawImageData = row.Images || row.Image || row.Proof || row.URL || '';
+                                        const directUrl = getDirectImageUrl(rawImageData);
+
+                                        if (!directUrl) {
+                                            if (row.Images || row.Image) {
+                                                console.log('Failed extracting image from:', { images: row.Images, image: row.Image });
+                                            }
+                                            return '-';
+                                        }
 
                                         return (
                                             <div className="flex items-center gap-3">
