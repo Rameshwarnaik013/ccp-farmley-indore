@@ -106,26 +106,27 @@ const DataTable = ({ data }) => {
                                             if (!directUrl) return '-';
 
                                             return (
-                                                <div className="flex items-center gap-1.5">
+                                                <div className="flex items-center gap-3">
                                                     <button
                                                         onClick={() => {
                                                             console.log('Opening Preview:', { original: row.Images, extracted: directUrl });
                                                             setSelectedImage(directUrl);
                                                         }}
-                                                        className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors pointer-events-auto"
-                                                        title="View Preview"
+                                                        className="text-blue-600 hover:text-blue-800 font-medium underline flex items-center gap-1.5 transition-colors"
+                                                        title="View Dashboard Preview"
                                                     >
                                                         <ImageIcon className="w-4 h-4" />
+                                                        View Image
                                                     </button>
                                                     <a
                                                         href={directUrl}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition-colors"
-                                                        title="Open Original"
+                                                        className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-blue-600 transition-all border border-slate-100"
+                                                        title="Open Original in New Tab"
                                                         onClick={(e) => e.stopPropagation()}
                                                     >
-                                                        <ExternalLink className="w-4 h-4" />
+                                                        <ExternalLink className="w-3.5 h-3.5" />
                                                     </a>
                                                 </div>
                                             );
