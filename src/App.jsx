@@ -28,6 +28,10 @@ function App() {
     try {
       const response = await fetchCCPData();
       if (response.status === 'success') {
+        if (response.data && response.data.length > 0) {
+          console.log('DEBUG: First Row Keys:', Object.keys(response.data[0]));
+          console.log('DEBUG: First Row Data:', response.data[0]);
+        }
         setData(response.data);
       }
     } catch (error) {

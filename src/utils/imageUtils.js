@@ -40,28 +40,56 @@ export const getDirectImageUrl = (url) => {
 /**
  * Scans an object for any property that looks like a web URL (image link).
  * Very helpful when GSheet column names are unpredictable.
+ * @returns {string[]} An array of direct image URLs found in the row.
  */
 export const findAnyImageUrl = (row) => {
-    if (!row || typeof row !== 'object') return null;
+    if (!row || typeof row !== 'object') return [];
+
+    let foundUrls = [];
 
     // 1. Try common keys first
-    const priorityKeys = ['Images', 'Image', 'Proof', 'URL', 'images', 'image', 'proof', 'url'];
+    const priorityKeys = ['Images', 'Image', 'Proof', 'URL', 'images', 'image', 'proof', 'url', 'View Image', 'View URL'];
     for (const key of priorityKeys) {
         const val = row[key];
         if (val && typeof val === 'string' && val.toLowerCase().includes('http')) {
-            const extracted = getDirectImageUrl(val);
-            if (extracted) return extracted;
+            // Split by comma or space in case multiple URLs are in one cell
+            const urls = val.split(/[,\s]+/).filter(u => u.trim() !== '');
+            for (const u of urls) {
+                if (u.toLowerCase().includes('http')) {
+                    const extracted = getDirectImageUrl(u);
+                    if (extracted) {
+                        console.log(`DEBUG: Found image link in priority key [${key}]:`, extracted);
+                        if (!foundUrls.includes(extracted)) {
+                            foundUrls.push(extracted);
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    if (foundUrls.length > 0) {
+        return foundUrls;
     }
 
     // 2. Backup: Scan ALL keys for any absolute HTTP URL
     for (const key in row) {
         const val = row[key];
         if (typeof val === 'string' && val.toLowerCase().includes('http')) {
-            const extracted = getDirectImageUrl(val);
-            if (extracted) return extracted;
+            const urls = val.split(/[,\s]+/).filter(u => u.trim() !== '');
+            for (const u of urls) {
+                if (u.toLowerCase().includes('http')) {
+                    const extracted = getDirectImageUrl(u);
+                    if (extracted) {
+                        console.log(`DEBUG: Found image link in scanned key [${key}]:`, extracted);
+                        if (!foundUrls.includes(extracted)) {
+                            foundUrls.push(extracted);
+                        }
+                    }
+                }
+            }
         }
     }
 
-    return null;
+    return foundUrls;
 };

@@ -64,9 +64,9 @@ const FailedTable = ({ data }) => {
                                 <td className="px-6 py-3 whitespace-nowrap text-sm text-slate-500">
                                     {(() => {
                                         // ULTRA ROBUST: Search entire row for any URL if specific keys fail
-                                        const directUrl = findAnyImageUrl(row);
+                                        const foundUrls = findAnyImageUrl(row);
 
-                                        if (!directUrl) {
+                                        if (foundUrls.length === 0) {
                                             // Debug log to help identify column names if still failing
                                             if (Object.values(row).some(v => typeof v === 'string' && v.includes('http'))) {
                                                 console.log('Found URL in row but extraction failed:', row);
@@ -75,28 +75,32 @@ const FailedTable = ({ data }) => {
                                         }
 
                                         return (
-                                            <div className="flex items-center gap-3">
-                                                <button
-                                                    onClick={() => {
-                                                        console.log('FailedTable Opening Preview:', { original: row.Images, extracted: directUrl });
-                                                        setSelectedImage(directUrl);
-                                                    }}
-                                                    className="text-red-600 hover:text-red-800 font-medium underline flex items-center gap-1.5 transition-colors"
-                                                    title="View Dashboard Preview"
-                                                >
-                                                    <ImageIcon className="w-4 h-4" />
-                                                    View Image
-                                                </button>
-                                                <a
-                                                    href={directUrl}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-red-600 transition-all border border-slate-100"
-                                                    title="Open Original in New Tab"
-                                                    onClick={(e) => e.stopPropagation()}
-                                                >
-                                                    <ExternalLink className="w-3.5 h-3.5" />
-                                                </a>
+                                            <div className="flex items-center gap-3 flex-wrap">
+                                                {foundUrls.map((directUrl, idx) => (
+                                                    <div key={idx} className="flex items-center gap-2">
+                                                        <button
+                                                            onClick={() => {
+                                                                console.log('FailedTable Opening Preview:', { original: row.Images, extracted: directUrl });
+                                                                setSelectedImage(directUrl);
+                                                            }}
+                                                            className="text-red-600 hover:text-red-800 font-medium underline flex items-center gap-1.5 transition-colors"
+                                                            title="View Dashboard Preview"
+                                                        >
+                                                            <ImageIcon className="w-4 h-4" />
+                                                            View {foundUrls.length > 1 ? `Image ${idx + 1}` : 'Image'}
+                                                        </button>
+                                                        <a
+                                                            href={directUrl}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-red-600 transition-all border border-slate-100"
+                                                            title="Open Original in New Tab"
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            <ExternalLink className="w-3.5 h-3.5" />
+                                                        </a>
+                                                    </div>
+                                                ))}
                                             </div>
                                         );
                                     })()}
