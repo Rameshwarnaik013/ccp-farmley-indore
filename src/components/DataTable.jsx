@@ -104,7 +104,10 @@ const DataTable = ({ data }) => {
                                         {(() => {
                                             // Scan EVERY property in the row for a link
                                             const foundUrls = findAnyImageUrl(row);
-                                            if (foundUrls.length === 0) return '-';
+                                            if (foundUrls.length === 0) {
+                                                const rawText = row.Images || row.Proof || '-';
+                                                return <span className="font-medium text-slate-500">{rawText}</span>;
+                                            }
 
                                             return (
                                                 <div className="flex items-center gap-3 flex-wrap">

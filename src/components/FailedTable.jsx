@@ -71,7 +71,9 @@ const FailedTable = ({ data }) => {
                                             if (Object.values(row).some(v => typeof v === 'string' && v.includes('http'))) {
                                                 console.log('Found URL in row but extraction failed:', row);
                                             }
-                                            return '-';
+                                            // Fallback: If "Images" or "Proof" is present, but lacks a URL, just render the text
+                                            const rawText = row.Images || row.Proof || '-';
+                                            return <span className="font-medium">{rawText}</span>;
                                         }
 
                                         return (
