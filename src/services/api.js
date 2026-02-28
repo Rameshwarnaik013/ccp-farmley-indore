@@ -1,5 +1,4 @@
-
-const API_URL = "https://script.google.com/macros/s/AKfycbzQ4xxkbm1_dLy6YbapHkXqxCNPPD4DE0U-VyNKkYwitM06wNGWh_tI2ED-679lr2q4/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzO3IZpqqcmYxAHohUJike7IjE1xlV4bhKnzXw_nvaTShdYC91BsdIW53XTOD848EXd/exec";
 
 export const fetchCCPData = async () => {
     try {
